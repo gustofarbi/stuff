@@ -15,30 +15,30 @@ import { CartComponent } from './cart/cart.component';
 import { ShippingComponent } from './shipping/shipping.component';
 
 @NgModule({
-            declarations: [
-              AppComponent,
-              UserListComponent,
-              UserDetailComponent,
-              TopBarComponent,
-              UserAlertsComponent,
-              CartComponent,
-              ShippingComponent,
-            ],
-            imports: [
-              BrowserModule,
-              ReactiveFormsModule,
-              AppRoutingModule,
-              RouterModule.forRoot([
-                                     { path: '', component: UserListComponent },
-                                     { path: 'users/:userId', component: UserDetailComponent },
-                                     { path: 'cart', component: CartComponent },
-                                     { path: 'shipping', component: ShippingComponent }
-                                   ]),
-              BrowserAnimationsModule,
-              HttpClientModule,
-            ],
-            providers: [],
-            bootstrap: [AppComponent]
-          })
+  declarations: [
+    AppComponent,
+    UserListComponent,
+    UserDetailComponent,
+    TopBarComponent,
+    UserAlertsComponent,
+    CartComponent,
+    ShippingComponent,
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    RouterModule.forRoot([
+      { path: '', component: UserListComponent },
+      { path: 'users/:userId', component: UserDetailComponent },
+      { path: 'cart', component: CartComponent },
+      { path: 'shipping', component: ShippingComponent }
+    ]),
+    BrowserAnimationsModule,
+    HttpClientModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
 export class AppModule {
 }

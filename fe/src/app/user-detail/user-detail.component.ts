@@ -4,10 +4,10 @@ import { users } from "../users";
 import { CartService } from "../cart.service";
 
 @Component({
-             selector: 'app-user-detail',
-             templateUrl: './user-detail.component.html',
-             styleUrls: ['./user-detail.component.css']
-           })
+  selector: 'app-user-detail',
+  templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.css']
+})
 export class UserDetailComponent implements OnInit {
   user;
 

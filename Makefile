@@ -15,3 +15,6 @@ ps:
 
 rebuild:
 	docker-compose up -d --build
+
+n:
+	docker-compose exec web nginx -s reload
