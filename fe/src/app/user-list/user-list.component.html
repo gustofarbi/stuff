@@ -1,0 +1,16 @@
+<h2>Users</h2>
+
+<div *ngFor="let user of users; index as userId">
+  <h3>
+    <a [title]="user.name + 'details'" [routerLink]="['/users', userId]">
+      {{ user.name }}
+    </a>
+  </h3>
+  <p *ngIf="user.description">
+    Description: {{user.description}}
+  </p>
+  <button (click)="share()">
+    Share
+  </button>
+  <app-user-alerts [user]="user" (notify)="onNotify()"></app-user-alerts>
+</div>
