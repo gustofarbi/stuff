@@ -7,5 +7,11 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/app</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="MongoDB - app@localhost" uuid="1ff62971-b02d-42a5-b75b-60e5369d8225">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://localhost:27017/app</jdbc-url>
+    </data-source>
   </component>
 </project>

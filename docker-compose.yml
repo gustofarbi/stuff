@@ -16,7 +16,8 @@ services:
       container_name: db
       working_dir: /application
       volumes:
-        - .:/application
+#        - .:/application
+        - datavolume:/var/lib/mysql
       environment:
         - MYSQL_ROOT_PASSWORD=toor
         - MYSQL_DATABASE=app
@@ -39,6 +40,42 @@ services:
       build: phpdocker/php-fpm
       container_name: fpm
       working_dir: /application
+      environment:
+#        XDEBUG_CONFIG: "remote_port=9000 remote_autostart=1"
+#        PHP_EXTENSION_DEBUG: 1
+        PHP_IDE_CONFIG: serverName=fpm
       volumes:
         - .:/application
         - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/cli/conf.d/99-overrides.ini
+        - ./phpdocker/php-fpm/xdebug.ini:/etc/php/7.4/fpm/conf.d/xdebug.ini
+
+    mongo:
+      image: mongo:4.2-bionic
+      container_name: mongo
+      environment:
+        - MONGO_INITDB_DATABASE=app
+        - MONGO_INITDB_ROOT_USERNAME=app
+        - MONGO_INITDB_ROOT_PASSWORD=app
+      volumes:
+      - mongo-datavolume:/data/db
+      ports:
+      - "27017-27019:27017-27019"
+
+    rabbitmq:
+      image: rabbitmq:3.8-alpine
+      container_name: rabbitmq
+      ports:
+      - "5672:5672"
+      - "15672:15672"
+      environment:
+        RABBITMQ_DEFAULT_USER: "app"
+        RABBITMQ_DEFAULT_PASS: "app"
+        RABBITMQ_DEFAULT_VHOST: "/app"
+      volumes:
+      - ./phpdocker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+
+
+volumes:
+  datavolume:
+  mongo-datavolume:

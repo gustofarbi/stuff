@@ -9,3 +9,9 @@ restart:
 
 exec:
 	docker-compose exec fpm bash
+
+ps:
+	docker-compose ps
+
+rebuild:
+	docker-compose up -d --build
