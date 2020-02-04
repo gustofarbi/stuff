@@ -9,7 +9,7 @@
   <p *ngIf="user.description">
     Description: {{user.description}}
   </p>
-  <button (click)="share()">
+  <button (click)="share()" class="mat-flat-button">
     Share
   </button>
   <app-user-alerts [user]="user" (notify)="onNotify()"></app-user-alerts>

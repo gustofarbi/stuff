@@ -13,6 +13,13 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { UserDetailComponent } from "./user-detail/user-detail.component";
 import { CartComponent } from './cart/cart.component';
 import { ShippingComponent } from './shipping/shipping.component';
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+import { MatCardModule } from "@angular/material/card";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatSidenavModule } from "@angular/material/sidenav";
 
 @NgModule({
   declarations: [
@@ -23,6 +30,9 @@ import { ShippingComponent } from './shipping/shipping.component';
     UserAlertsComponent,
     CartComponent,
     ShippingComponent,
+    HomeComponent,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,6 +46,10 @@ import { ShippingComponent } from './shipping/shipping.component';
     ]),
     BrowserAnimationsModule,
     HttpClientModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatSidenavModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
