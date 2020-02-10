@@ -14,6 +14,8 @@ class HomeController extends AbstractController
     {
         $words = ['sky', 'cloud', 'wood', 'rock', 'forest', 'mountain', 'breeze'];
 
+        return $this->json('its ok');
+
         return $this->render('home/index.html.twig', [
             'words' => $words,
         ]);

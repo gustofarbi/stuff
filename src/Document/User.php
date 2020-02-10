@@ -2,6 +2,8 @@
 
 namespace App\Document;
 
+use App\Traits\DateTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -10,6 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    use DateTrait;
+
     /**
      * @ODM\Id
      */
@@ -18,17 +22,51 @@ class User implements UserInterface
     /**
      * @ODM\Field(type="string")
      */
-    private $email;
-
-    /**
-     * @ODM\Field(type="collection")
-     */
-    private $roles = [];
+    private string $email = '';
 
     /**
      * @ODM\Field(type="string")
      */
-    private $password;
+    private string $username = '';
+
+    /**
+     * @ODM\Field(type="collection")
+     */
+    private array $roles = [];
+
+    /**
+     * @ODM\Field(type="string")
+     */
+    private string $password = '';
+
+    /**
+     * @var Comment[]
+     * @ODM\ReferenceMany(targetDocument="Comment::class", mappedBy="user")
+     */
+    private $comments;
+
+    /**
+     * @var BlogPost[]
+     * @ODM\ReferenceMany(targetDocument="BlogPost::class", mappedBy="user")
+     */
+    private $blogposts;
+
+    /**
+     * @var ApiToken[]
+     * @ODM\ReferenceMany(targetDocument="ApiToken::class", mappedBy="user", cascade={"persist", "remove"},
+     *                                                      orphanRemoval=true)
+     */
+    private $apiTokens;
+
+    public function __construct()
+    {
+        $this->comments  = new ArrayCollection();
+        $this->blogposts = new ArrayCollection();
+        $this->apiTokens = new ArrayCollection();
+
+        $this->setCreatedAt()
+             ->setUpdatedAt();
+    }
 
     public function getId(): ?string
     {
@@ -47,19 +85,33 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->username;
     }
 
-    /**
-     * @see UserInterface
-     */
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getComments(): ArrayCollection
+    {
+        return $this->comments;
+    }
+
+    public function getBlogposts(): ArrayCollection
+    {
+        return $this->blogposts;
+    }
+
+    public function getApiTokens(): ArrayCollection
+    {
+        return $this->apiTokens;
+    }
+
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -76,12 +128,9 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -91,20 +140,13 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getSalt()
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->apiTokens->clear();
     }
 }

@@ -1,3 +1,14 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+#account:
+#  path: /api/account/*
+#  type: annotation
+#  prefix: /api/account
+#  controller: App\Controller\AccountController
+
+controllers:
+  prefix: /api
+  resource: ../src/Controller/
+  type: annotation
+  exclude: App\Controller\AccountController

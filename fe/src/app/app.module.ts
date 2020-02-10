@@ -20,6 +20,10 @@ import { MatCardModule } from "@angular/material/card";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { AlertComponent } from './alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +37,7 @@ import { MatSidenavModule } from "@angular/material/sidenav";
     HomeComponent,
     LoginComponent,
     RegisterComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,6 +55,9 @@ import { MatSidenavModule } from "@angular/material/sidenav";
     MatToolbarModule,
     MatTooltipModule,
     MatSidenavModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,32 +1,25 @@
 security:
-    encoders:
-        App\Entity\User:
-            algorithm: auto
-        App\Document\User:
-            algorithm: auto
+  encoders:
+    App\Entity\User:
+      algorithm: auto
+    App\Document\User:
+      algorithm: auto
 
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            anonymous: lazy
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+  providers:
+    app_user_provider:
+      id: App\Security\UserProvider
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      anonymous: lazy
+      stateless: true
+      guard:
+        authenticators:
+          - App\Security\BaseAuthenticator
+  access_control:
+    -
+      path: ^/api
+      roles: 'ROLE_AUTHENTICATED'
+      allow_if: "request.getPathInfo() !='/api/login' or request.getPathInfo() != '/api/register'"
