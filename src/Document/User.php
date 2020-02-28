@@ -4,65 +4,71 @@ namespace App\Document;
 
 use App\Traits\DateTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\ReferenceMany;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\UniqueIndex;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ODM\Document(collection="users")
+ * @Document(collection="users")
  */
 class User implements UserInterface
 {
     use DateTrait;
 
     /**
-     * @ODM\Id
+     * @Id
      */
     private $id;
 
     /**
-     * @ODM\Field(type="string")
+     * @Field(type="string")
+     * @UniqueIndex(order="asc")
      */
     private string $email = '';
 
     /**
-     * @ODM\Field(type="string")
+     * @Field(type="string")
      */
     private string $username = '';
 
     /**
-     * @ODM\Field(type="collection")
+     * @Field(type="collection")
      */
     private array $roles = [];
 
     /**
-     * @ODM\Field(type="string")
+     * @Field(type="string")
      */
     private string $password = '';
 
     /**
      * @var Comment[]
-     * @ODM\ReferenceMany(targetDocument="Comment::class", mappedBy="user")
+     * @ReferenceMany(targetDocument="Comment::class", mappedBy="user")
      */
     private $comments;
 
     /**
      * @var BlogPost[]
-     * @ODM\ReferenceMany(targetDocument="BlogPost::class", mappedBy="user")
+     * @ReferenceMany(targetDocument="BlogPost::class", mappedBy="user")
      */
     private $blogposts;
 
     /**
      * @var ApiToken[]
-     * @ODM\ReferenceMany(targetDocument="ApiToken::class", mappedBy="user", cascade={"persist", "remove"},
+     * @ReferenceMany(targetDocument="ApiToken::class", mappedBy="user", cascade={"persist", "remove"},
      *                                                      orphanRemoval=true)
      */
     private $apiTokens;
 
     public function __construct()
     {
-        $this->comments  = new ArrayCollection();
-        $this->blogposts = new ArrayCollection();
         $this->apiTokens = new ArrayCollection();
+        $this->blogposts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
 
         $this->setCreatedAt()
              ->setUpdatedAt();
@@ -97,17 +103,17 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getComments(): ArrayCollection
+    public function getComments(): Collection
     {
         return $this->comments;
     }
 
-    public function getBlogposts(): ArrayCollection
+    public function getBlogposts(): Collection
     {
         return $this->blogposts;
     }
 
-    public function getApiTokens(): ArrayCollection
+    public function getApiTokens(): Collection
     {
         return $this->apiTokens;
     }

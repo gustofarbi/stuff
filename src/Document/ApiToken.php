@@ -11,7 +11,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\ReferenceOne;
 
 /**
- * @Document()
+ * @Document(collection="api_tokens")
  */
 class ApiToken
 {
@@ -33,7 +33,7 @@ class ApiToken
     private DateTime $expiresAt;
 
     /**
-     * @ReferenceOne(targetDocument="User::class", inversedBy="apiTokens")
+     * @ReferenceOne(targetDocument=User::class, inversedBy="apiTokens")
      */
     private User $user;
 

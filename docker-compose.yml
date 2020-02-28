@@ -41,7 +41,7 @@ services:
       container_name: fpm
       working_dir: /application
       environment:
-#        XDEBUG_CONFIG: "remote_port=9000 remote_autostart=1"
+        XDEBUG_CONFIG: "remote_host=host.docker.internal remote_port=9000 remote_enable=1 remote_autostart=1"
 #        PHP_EXTENSION_DEBUG: 1
         PHP_IDE_CONFIG: serverName=fpm
       volumes:
@@ -49,6 +49,7 @@ services:
         - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
         - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/cli/conf.d/99-overrides.ini
         - ./phpdocker/php-fpm/xdebug.ini:/etc/php/7.4/fpm/conf.d/xdebug.ini
+        - ./phpdocker/php-fpm/xdebug.ini:/etc/php/7.4/cli/conf.d/xdebug.ini
 
     mongo:
       image: mongo:4.2-bionic

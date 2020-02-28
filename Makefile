@@ -18,3 +18,10 @@ rebuild:
 
 n:
 	docker-compose exec web nginx -s reload
+
+install:
+	docker-compose exec fpm composer install
+
+recompile:
+	docker-compose down; docker-compose up -d; docker-compose exec fpm bash
+

@@ -18,18 +18,20 @@ class CommentController extends AbstractController
     /**
      * @Route("/", name="comment_index", methods={"GET"})
      */
-    public function index(CommentRepository $commentRepository): Response
+    public function index(): Response
     {
+
         return $this->render('comment/index.html.twig', [
             'comments' => $commentRepository->findAll(),
         ]);
     }
 
     /**
-     * @Route("/new", name="comment_new", methods={"GET","POST"})
+     * @Route("/new/{blogpost}", name="comment_new", methods={"POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, int $blogpost): Response
     {
+        $comment = new \App\Document\Comment();
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);

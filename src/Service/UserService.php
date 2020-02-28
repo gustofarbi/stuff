@@ -10,44 +10,44 @@ use App\Form\Type\RegistrationType;
 use App\Security\BaseAuthenticator;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\MongoDBException;
-use Exception;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class UserService
 {
     private DocumentManager              $dm;
-
     private UserPasswordEncoderInterface $passwordEncoder;
-
     private FormFactoryInterface         $formFactory;
-
     private SerializerInterface          $serializer;
-
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
+    private Request $request;
 
     public function __construct(
+        RequestStack $requestStack,
         DocumentManager $dm,
         UserPasswordEncoderInterface $passwordEncoder,
         FormFactoryInterface $formFactory,
         SerializerInterface $serializer,
         LoggerInterface $logger
-    ) {
-        $this->dm              = $dm;
+    )
+    {
+        $request = $requestStack->getCurrentRequest();
+        if ($request === null) {
+            throw new \InvalidArgumentException('no request');
+        } else {
+            $this->request = $request;
+        }
+        $this->dm = $dm;
         $this->passwordEncoder = $passwordEncoder;
-        $this->formFactory     = $formFactory;
-        $this->serializer      = $serializer;
-        $this->logger          = $logger;
+        $this->formFactory = $formFactory;
+        $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
     public function login(Request $request): Response
@@ -69,7 +69,7 @@ class UserService
                 }
 
                 $token = $this->registerToken($user);
-                $msg   = [
+                $msg = [
                     'message' => [
                         'apiToken' => $token->getContent(),
                     ],
@@ -107,12 +107,16 @@ class UserService
      * @return Response
      * @throws MongoDBException
      */
-    public function register(Request $request): Response
+    public function register(): Response
     {
+        if ($this->checkIsLoggedIn()) {
+            return $this->alreadyLoggedIn();
+        }
+
         $form = $this->formFactory->create(RegistrationType::class, new User());
 
-        $form->handleRequest($request);
-        $form->submit($request->request->all());
+        $form->handleRequest($this->request);
+        $form->submit($this->request->request->all());
 
         if ($form->isValid()) {
             /** @var User $user */
@@ -164,5 +168,27 @@ class UserService
 
             return sha1(uniqid());
         }
+    }
+
+    private function checkIsLoggedIn(): bool
+    {
+        if ($this->request->headers->has(BaseAuthenticator::AUTH_TOKEN_HEADER)) {
+            $apiToken = $this->request->headers->get(BaseAuthenticator::AUTH_TOKEN_HEADER);
+
+            $apiToken = $this->dm->getRepository(ApiToken::class)->findOneBy([
+                'content' => $apiToken,
+            ]);
+
+            $user = $apiToken->getUser();
+
+            return $user !== null;
+        }
+
+        return false;
+    }
+
+    private function alreadyLoggedIn(): Response
+    {
+        return new JsonResponse(['message' => 'user is already logged in']);
     }
 }

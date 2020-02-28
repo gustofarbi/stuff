@@ -2,7 +2,7 @@
 
 namespace App\Security;
 
-use App\Document\User;
+use App\Document\ApiToken;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,11 +66,11 @@ class BaseAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        return $this->dm->getRepository(User::class)->findOneBy(
+        return $this->dm->getRepository(ApiToken::class)->findOneBy(
             [
-                'apiToken' => $apiToken,
+                'content' => $apiToken,
             ]
-        );
+        )->getUser();
     }
 
     public function checkCredentials($credentials, UserInterface $user)

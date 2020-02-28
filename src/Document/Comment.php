@@ -6,7 +6,7 @@ use App\Traits\DateTrait;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * @ODM\Document(collection="comments")
+ * @ODM\Document(collection="comments", repositoryClass="CommentRepository::class")
  */
 class Comment
 {
@@ -19,19 +19,29 @@ class Comment
     protected $id;
 
     /**
-     * @ODM\ReferenceOne(targetDocument=User::class, inversedBy="comments")
+     * @ODM\ReferenceOne(targetDocument="User::class", inversedBy="comments")
      */
     protected User $user;
 
     /**
      * @ODM\ReferenceOne(targetDocument="BlogPost::class")
      */
-    private BlogPost $blog;
+    private BlogPost $blogPost;
 
     /**
      * @ODM\Field(type="string")
      */
     protected string $content;
+
+    public function __construct(User $user, BlogPost $blogPost, string $content)
+    {
+        $this->user = $user;
+        $this->blogPost = $blogPost;
+        $this->content = $content;
+
+        $this->setUpdatedAt()
+            ->setCreatedAt();
+    }
 
     public function getId(): ?string
     {
@@ -48,14 +58,14 @@ class Comment
         $this->user = $user;
     }
 
-    public function getBlog(): BlogPost
+    public function getBlogPost(): BlogPost
     {
-        return $this->blog;
+        return $this->blogPost;
     }
 
-    public function setBlog(BlogPost $blog): self
+    public function setBlogPost(BlogPost $blogPost): self
     {
-        $this->blog = $blog;
+        $this->blogPost = $blogPost;
 
         return $this;
     }
